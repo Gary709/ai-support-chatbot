@@ -23,6 +23,9 @@ export function composeHandoff(language: Lang, ticket: Ticket): string {
     if (ticket.reason === 'ask_gary') {
       return `材料、颜色和数量我自己回。单号 ${ticket.id}。`;
     }
+    if (ticket.reason === 'claim') {
+      return `退货、退款或破损我没法在这里批。把订单号发到 support@tinyfab3d.com.au，破损请附照片。留给 Gary。单号 ${ticket.id}。`;
+    }
     if (ticket.reason === 'unconfirmed') {
       return `这个我还没写下来，所以不编。留给 Gary。单号 ${ticket.id}。`;
     }
@@ -36,6 +39,9 @@ export function composeHandoff(language: Lang, ticket: Ticket): string {
   }
   if (ticket.reason === 'ask_gary') {
     return `Material, colour and quantity are ones I answer myself. ${ticket.id}.`;
+  }
+  if (ticket.reason === 'claim') {
+    return `I can't approve a return, refund or damage claim from here. Email support@tinyfab3d.com.au with the order number, and photos if it's damaged. It's with Gary. ${ticket.id}.`;
   }
   if (ticket.reason === 'unconfirmed') {
     return `I haven't written that down, so I won't make something up. It's with Gary. ${ticket.id}.`;

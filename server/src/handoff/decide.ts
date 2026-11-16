@@ -40,16 +40,41 @@ const MATERIAL_OR_COLOUR = [
 ];
 
 const QUANTITY = [
-  /\bhow many\b/i,
+  /\bhow many (?!days\b)/i,
   /\bhow much (?!is\b|does\b|are\b)/i,
   /\b\d+\s?(?:kg|kgs|rolls?|spools?)\b/i,
   /多少卷|多少公斤|要多少|买多少/,
+];
+
+const RETURN_REQUEST = [
+  /\b(?:i want to|i'd like to|please) (?:return|refund)\b/i,
+  /\b(?:return|refund) my\b/i,
+  /\bstart a return\b/i,
+  /我要退|我想退|申请退/,
+];
+
+const DAMAGE_CLAIM = [
+  /\b(?:my|i) .{0,48}\b(?:damaged|defective|faulty|broken|wrong item)\b/i,
+  /\barrived damaged\b/i,
+  /\b(?:received|got) (?:a |the )?(?:damaged|wrong|defective)\b/i,
+  /我(?:的|收到).{0,16}(?:破损|损坏|发错|坏了)/,
 ];
 
 export function needsGary(message: string): boolean {
   return (
     MATERIAL_OR_COLOUR.some((pattern) => pattern.test(message)) ||
     QUANTITY.some((pattern) => pattern.test(message))
+  );
+}
+
+export function isCaseForGary(message: string): boolean {
+  if (/\b(?:what if|what happens|policy|restocking)\b/i.test(message)) return false;
+  if (/政策|怎么办|算不算|真空袋/.test(message) && !/我的|我收到|我要|我想/.test(message)) {
+    return false;
+  }
+  return (
+    RETURN_REQUEST.some((pattern) => pattern.test(message)) ||
+    DAMAGE_CLAIM.some((pattern) => pattern.test(message))
   );
 }
 
@@ -96,6 +121,7 @@ export function decideHandoff(input: {
   if (AFFIRMATIONS.some((pattern) => pattern.test(message))) return { action: 'clarify' };
   if (isExplicitHandoff(message)) return { action: 'handoff', reason: 'explicit_request' };
   if (isSpecificOrderLookup(message)) return { action: 'handoff', reason: 'order_lookup' };
+  if (isCaseForGary(message)) return { action: 'handoff', reason: 'claim' };
   if (needsGary(message)) return { action: 'handoff', reason: 'ask_gary' };
   if (!(input.confidence >= input.threshold)) {
     return { action: 'handoff', reason: 'low_confidence' };

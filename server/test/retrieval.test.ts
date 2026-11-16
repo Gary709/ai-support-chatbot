@@ -52,12 +52,12 @@ describe('searchKnowledge', () => {
     );
     expect(searchKnowledge('How much is PLA Basic?', articles)[0]?.id).toBe('products.pla-basic');
     expect(searchKnowledge('How much is PETG Basic?', articles)[0]?.id).toBe('products.petg-basic');
-    expect(searchKnowledge('What is your returns policy?', articles)[0]?.id).toBe('todo.returns');
+    expect(searchKnowledge('What is your returns policy?', articles)[0]?.id).toBe('returns.policy');
     expect(searchKnowledge('How much is postage to Melbourne?', articles)[0]?.id).toBe(
-      'todo.shipping-cost',
+      'shipping.postage',
     );
     expect(searchKnowledge('How many days does delivery take?', articles)[0]?.id).toBe(
-      'todo.delivery-days',
+      'shipping.times',
     );
     expect(searchKnowledge('How long does sea freight from China take?', articles)[0]?.id).toBe(
       'stock.leadtime',
@@ -77,7 +77,7 @@ describe('searchKnowledge', () => {
     expect(petg?.matchedLang).toBe('zh');
 
     expect(searchKnowledge('从中国海运大概要多久', articles)[0]?.id).toBe('stock.leadtime');
-    expect(searchKnowledge('退货怎么算', articles)[0]?.id).toBe('todo.returns');
+    expect(searchKnowledge('退货怎么算', articles)[0]?.id).toBe('returns.policy');
   });
 
   it('gives in-catalogue questions a high overlap and off-topic questions a low one', () => {
@@ -90,16 +90,19 @@ describe('searchKnowledge', () => {
     expect(overlapConfidence('hello there', 'free delivery in canberra')).toBe(0);
   });
 
-  it('marks returns, postage and delivery days for Gary to confirm', () => {
-    const todos = articles.filter((article) => article.status === 'todo' && article.lang === 'en');
-    expect(todos.map((article) => article.id).sort()).toEqual([
-      'todo.delivery-days',
-      'todo.returns',
-      'todo.shipping-cost',
-    ]);
-    for (const article of todos) {
-      expect(article.summary).toBe('TODO: confirm with Gary');
-    }
+  it('points at the published return and shipping policies', () => {
+    const returns = articles.find(
+      (article) => article.id === 'returns.policy' && article.lang === 'en',
+    );
+    const postage = articles.find(
+      (article) => article.id === 'shipping.postage' && article.lang === 'en',
+    );
+    expect(returns?.summary).toContain('https://www.tinyfab3d.com.au/policies/refund-policy');
+    expect(returns?.summary).toContain('30 days');
+    expect(returns?.summary).toContain('20%');
+    expect(postage?.summary).toContain('https://www.tinyfab3d.com.au/policies/shipping-policy');
+    expect(postage?.summary).toContain('12.50');
+    expect(articles.some((article) => article.status === 'todo')).toBe(false);
   });
 
   it('returns nothing for an empty query', () => {

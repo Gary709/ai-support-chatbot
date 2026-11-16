@@ -54,6 +54,15 @@ describe('decideHandoff', () => {
     expect(decideHandoff({ message: 'How much is PLA Basic?', confidence: 1, threshold })).toEqual({
       action: 'answer',
     });
+    expect(
+      decideHandoff({ message: 'How many days does delivery take?', confidence: 1, threshold }),
+    ).toEqual({ action: 'answer' });
+    expect(
+      decideHandoff({ message: 'My spool arrived damaged', confidence: 1, threshold }),
+    ).toEqual({ action: 'handoff', reason: 'claim' });
+    expect(
+      decideHandoff({ message: 'What is your returns policy?', confidence: 1, threshold }),
+    ).toEqual({ action: 'answer' });
   });
 
   it('hands off when retrieval confidence is below the threshold', () => {
@@ -137,10 +146,22 @@ describe('ticket records', () => {
       { message: 'What is your returns policy?', sessionId: 'session1' },
       deps,
     );
-    expect(returns.action).toBe('handoff');
-    expect(returns.ticket?.reason).toBe('unconfirmed');
-    expect(returns.text).not.toContain('TODO');
-    expect(returns.text).not.toMatch(/\b30\b/);
+    expect(returns.action).toBe('answer');
+    expect(returns.ticket).toBeNull();
+    expect(returns.text).toContain('30 days');
+    expect(returns.text).toContain('refund-policy');
+
+    const postage = planReply(
+      { message: 'How much is postage to Melbourne?', sessionId: 'session1' },
+      deps,
+    );
+    expect(postage.action).toBe('answer');
+    expect(postage.text).toContain('12.50');
+    expect(postage.text).toContain('current');
+
+    const damaged = planReply({ message: 'My spool arrived damaged', sessionId: 'session1' }, deps);
+    expect(damaged.ticket?.reason).toBe('claim');
+    expect(damaged.text).toContain('support@tinyfab3d.com.au');
 
     const colour = planReply(
       { message: 'Which colour should I get?', sessionId: 'session1' },

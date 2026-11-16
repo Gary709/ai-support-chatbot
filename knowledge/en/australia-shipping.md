@@ -7,5 +7,4 @@ status: known
 ---
 
 We ship Australia-wide.
-
-TinyFab ships around Australia, not only inside Canberra. This note does not say what that costs or how many days it takes.
+Shipping policy: https://www.tinyfab3d.com.au/policies/shipping-policy

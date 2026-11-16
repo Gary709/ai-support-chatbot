@@ -5,7 +5,7 @@ export type LanguageMode = 'auto' | Lang;
 export type LlmMode = 'mock' | 'openai';
 
 export type HandoffReason =
-  'explicit_request' | 'low_confidence' | 'order_lookup' | 'unconfirmed' | 'ask_gary';
+  'explicit_request' | 'low_confidence' | 'order_lookup' | 'unconfirmed' | 'ask_gary' | 'claim';
 
 export type HistoryMessage = {
   role: 'user' | 'assistant';

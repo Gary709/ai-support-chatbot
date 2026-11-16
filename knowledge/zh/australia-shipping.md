@@ -7,5 +7,4 @@ status: known
 ---
 
 澳大利亚境内都可以寄。
-
-不只堪培拉，澳大利亚其他地方也寄。这里没写运费，也没写要几天。
+配送政策：https://www.tinyfab3d.com.au/policies/shipping-policy

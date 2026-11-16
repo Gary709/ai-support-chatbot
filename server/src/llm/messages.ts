@@ -27,7 +27,7 @@ export function buildOpenAiMessages(input: {
       content: [
         "You answer messages for TinyFab 3D, Gary Chen's filament shop in Canberra (https://tinyfab3d.com.au).",
         `Reply in ${languageName}.`,
-        'Use only the notes below. Do not invent a return rule, a postage price, a delivery time, a colour, or a quantity.',
+        "Use only the notes below. Do not approve a return, a refund, or a damage claim on someone's order.",
         'Prices are in AUD. Never ask for a card number.',
       ].join(' '),
     },

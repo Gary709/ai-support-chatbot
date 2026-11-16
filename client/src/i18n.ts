@@ -52,6 +52,8 @@ export const copy: Record<Lang, Copy> = {
       'Starter pack from $39.90',
       'Volume pricing for farms, schools, studios',
       'Sea freight, about 1.5 months',
+      'Returns within 30 days',
+      'Postage calculated at checkout',
     ],
     ticketsLabel: 'For me',
     noTickets: 'Nothing yet.',
@@ -82,6 +84,7 @@ export const copy: Record<Lang, Copy> = {
       order_lookup: 'Needs the Shopify order',
       unconfirmed: "I haven't written this down",
       ask_gary: 'Material, colour or quantity',
+      claim: 'A return or a damaged parcel',
     },
     modeMock: 'From my notes',
     modeLive: (model) => `Using ${model}`,
@@ -90,7 +93,7 @@ export const copy: Record<Lang, Copy> = {
     footer:
       "Don't put a card number in here. A ticket just sits in this chat until I hook up email.",
     welcome:
-      "Hi, it's Gary at TinyFab. I can tell you spool prices, and that delivery is free across Canberra. Stock comes by sea from China, about a month and a half. Colour, quantity, returns and postage go to me.",
+      "Hi, it's Gary at TinyFab. I can tell you spool prices, Canberra delivery, postage and returns. Stock comes by sea from China, about a month and a half. Colour, quantity, and a return or damaged parcel on an actual order still come to me.",
   },
   zh: {
     lede: '堪培拉的线材店。价格是澳元。货从中国海运过来，大概一个半月，所以有的颜色会断一阵。',
@@ -109,6 +112,8 @@ export const copy: Record<Lang, Copy> = {
       '入门套装 39.90 澳元起',
       '农场、学校、工作室可以谈批量价',
       '海运大概一个半月',
+      '签收后 30 天内可退',
+      '运费在结账时按重量算',
     ],
     ticketsLabel: '留给我的',
     noTickets: '还没有。',
@@ -139,6 +144,7 @@ export const copy: Record<Lang, Copy> = {
       order_lookup: '要查 Shopify 订单',
       unconfirmed: '我还没写下来',
       ask_gary: '材料、颜色或数量',
+      claim: '一笔退货或破损',
     },
     modeMock: '按我的笔记回',
     modeLive: (model) => `用着 ${model}`,
@@ -146,6 +152,6 @@ export const copy: Record<Lang, Copy> = {
     networkError: '没发出去。服务开了吗？',
     footer: '别把卡号发在这里。工单先记在这个聊天里，邮件我还没接上。',
     welcome:
-      '你好，我是 Gary，TinyFab 在堪培拉。线材价格和堪培拉免费送货我可以答。货从中国海运过来，大概一个半月。颜色、数量、退货和运费，我自己回。',
+      '你好，我是 Gary，TinyFab 在堪培拉。线材价格、堪培拉送货、运费和退货规则我可以答。货从中国海运过来，大概一个半月。颜色、数量，以及某一单的退货或破损，还是我自己处理。',
   },
 };

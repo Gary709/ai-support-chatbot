@@ -24,7 +24,13 @@ export function parseArticle(raw: string, file: string): Article {
   const markdown = text.slice(end + 5).trim();
   const paragraphs = markdown
     .split(/\n\s*\n/)
-    .map((paragraph) => paragraph.replace(/\s+/g, ' ').trim())
+    .map((paragraph) =>
+      paragraph
+        .split('\n')
+        .map((line) => line.replace(/[ \t]+/g, ' ').trim())
+        .filter(Boolean)
+        .join('\n'),
+    )
     .filter(Boolean);
   if (paragraphs.length === 0) throw new Error(`Knowledge file ${file} has no body`);
 

@@ -12,12 +12,15 @@ What it will answer:
 - TinyFab PLA Matte 1.75mm 1kg, from $17.99, 7 variants
 - TinyFab PETG Basic 1.75mm 1kg, from $15.99, 12 variants
 - Essential Starter Pack, from $39.90
-- Free delivery across Canberra
-- Shipping around Australia
+- Free local delivery for eligible Canberra and surrounding postcodes
+- How long local and interstate delivery takes, and the current postage examples
+- Returns, from the published refund policy
 - Volume pricing for print farms, schools, studios and businesses
 - Stock comes by sea from China, about a month and a half, so a colour can be out of stock for a while
 
-Material, colour and quantity go to me. So does anything I haven't confirmed: returns, the actual postage price, and how many days delivery takes. Those three are in the notes as `TODO: confirm with Gary`. The chat opens a ticket instead of inventing a rule. It also can't see Shopify, so a real order number becomes a ticket too.
+The return and shipping notes link to [the refund policy](https://www.tinyfab3d.com.au/policies/refund-policy) and [the shipping policy](https://www.tinyfab3d.com.au/policies/shipping-policy). Postage examples are the current rates. Checkout shows the final price.
+
+Material, colour and quantity still come to me. So does a return, refund or damage claim on an actual order. The chat can't see Shopify, so an order number becomes a ticket too.
 
 No key is committed. Without `OPENAI_API_KEY` it reads the matching note back. With a key it sends that same note to the model.
 
@@ -31,7 +34,9 @@ From my notes, no API key.
 
 ![PETG Basic price, in Chinese](docs/zh-petg-price.png)
 
-![A returns question left for me, instead of a made-up policy](docs/handoff-returns.png)
+![The published return rules, with a link to the policy page](docs/returns-policy.png)
+
+![A damaged spool left for me, instead of an approval](docs/handoff-claim.png)
 
 ![Same chat on a phone](docs/mobile-zh-delivery.png)
 
@@ -66,15 +71,12 @@ docker run --rm -p 8787:8787 tinyfab-support
 
 ## Not done yet
 
-- It does not look up orders. I haven't connected Shopify.
+- It does not look up orders, approve a return, or judge a damage claim. I haven't connected Shopify.
 - Tickets stay in memory. I don't get an email when one is opened.
-- Returns, exact postage, and delivery days are still unconfirmed. The chat will not guess them.
+- Postage in the notes is the current example for a 1–3 kg parcel. The checkout price can differ.
 - I haven't run the Docker image on a server.
 
 ## TODO
 
-- Confirm the return rules
-- Confirm postage prices
-- Confirm how many days Canberra and interstate delivery actually take
 - Email me when a ticket is opened
 - Read an order from Shopify once I'm ready to connect it
