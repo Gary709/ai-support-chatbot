@@ -44,6 +44,18 @@ describe('decideHandoff', () => {
     ).toBe('answer');
   });
 
+  it('sends material, colour and quantity to Gary, and still answers a price', () => {
+    expect(
+      decideHandoff({ message: 'Which colour should I get?', confidence: 1, threshold }),
+    ).toEqual({ action: 'handoff', reason: 'ask_gary' });
+    expect(
+      decideHandoff({ message: 'How many rolls do I need?', confidence: 1, threshold }),
+    ).toEqual({ action: 'handoff', reason: 'ask_gary' });
+    expect(decideHandoff({ message: 'How much is PLA Basic?', confidence: 1, threshold })).toEqual({
+      action: 'answer',
+    });
+  });
+
   it('hands off when retrieval confidence is below the threshold', () => {
     expect(
       decideHandoff({ message: 'Do you sell laser cutters?', confidence: 0.1, threshold }),
@@ -86,13 +98,11 @@ describe('ticket records', () => {
     const store = createTicketStore({ now: () => new Date('2026-01-15T00:00:00.000Z') });
     const deps = { store, threshold, mode: 'mock' as const };
 
-    const petg = planReply(
-      { message: 'What nozzle temperature for PETG?', sessionId: 'session1' },
-      deps,
-    );
-    expect(petg.action).toBe('answer');
-    expect(petg.sources.map((source) => source.id)).toEqual(['filament.petg']);
-    expect(petg.text).not.toContain('190');
+    const price = planReply({ message: 'How much is PLA Basic?', sessionId: 'session1' }, deps);
+    expect(price.action).toBe('answer');
+    expect(price.sources.map((source) => source.id)).toEqual(['products.pla-basic']);
+    expect(price.text).toContain('16.49');
+    expect(price.ticket).toBeNull();
 
     const answered = planReply(
       { message: 'Is delivery free in Canberra?', sessionId: 'session1' },
@@ -122,6 +132,21 @@ describe('ticket records', () => {
     );
     expect(unsure.action).toBe('handoff');
     expect(unsure.ticket?.reason).toBe('low_confidence');
-    expect(store.list('session1')).toHaveLength(3);
+
+    const returns = planReply(
+      { message: 'What is your returns policy?', sessionId: 'session1' },
+      deps,
+    );
+    expect(returns.action).toBe('handoff');
+    expect(returns.ticket?.reason).toBe('unconfirmed');
+    expect(returns.text).not.toContain('TODO');
+    expect(returns.text).not.toMatch(/\b30\b/);
+
+    const colour = planReply(
+      { message: 'Which colour should I get?', sessionId: 'session1' },
+      deps,
+    );
+    expect(colour.ticket?.reason).toBe('ask_gary');
+    expect(store.list('session1')).toHaveLength(5);
   });
 });

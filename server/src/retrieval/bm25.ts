@@ -7,10 +7,6 @@ export type Bm25Score = { id: string; score: number };
 const K1 = 1.2;
 const B = 0.75;
 
-/**
- * BM25 ranking. IDF uses the always-positive Lucene form so a term that
- * appears in every document does not push a score below zero.
- */
 export function bm25Rank(query: string, docs: Bm25Doc[]): Bm25Score[] {
   const tokenized = docs.map((doc) => tokenize(doc.text));
   const avgdl = tokenized.reduce((sum, tokens) => sum + tokens.length, 0) / (tokenized.length || 1);
@@ -35,6 +31,7 @@ export function bm25Rank(query: string, docs: Bm25Doc[]): Bm25Score[] {
         const frequency = frequencies.get(term) ?? 0;
         if (!frequency) continue;
         const containing = documentFrequency.get(term) ?? 0;
+        // Lucene's IDF stays positive when a term is in every note.
         const idf = Math.log(1 + (total - containing + 0.5) / (containing + 0.5));
         const numerator = frequency * (K1 + 1);
         const denominator = frequency + K1 * (1 - B + (B * length) / (avgdl || 1));

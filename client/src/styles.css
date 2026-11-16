@@ -81,14 +81,13 @@ button {
 
 .brand {
   display: flex;
-  gap: 12px;
-  align-items: center;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.spool {
-  width: 52px;
-  height: 52px;
-  flex: none;
+.shop-link {
+  color: var(--ink);
+  font-size: 14px;
 }
 
 .eyebrow {
@@ -191,15 +190,13 @@ button {
 }
 
 .topics ul,
-.legend ul,
 .ticket-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.topics li,
-.legend li {
+.topics li {
   font-size: 14px;
   padding: 4px 0 4px 14px;
   position: relative;
@@ -214,39 +211,6 @@ button {
   position: absolute;
   left: 0;
   top: 0.7em;
-}
-
-.legend ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-}
-
-.legend li {
-  padding-left: 0;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-}
-
-.swatch {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.swatch.pla {
-  background: #f2c14e;
-}
-
-.swatch.petg {
-  background: #e25b2a;
-}
-
-.swatch.tpu {
-  background: #8fbfb8;
 }
 
 .ticket-list {
@@ -527,7 +491,6 @@ textarea:focus {
   }
 
   .topics,
-  .legend,
   .ticket-block,
   .demo-note {
     display: none;

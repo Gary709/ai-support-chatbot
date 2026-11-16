@@ -1,9 +1,15 @@
 import type { Lang } from '../types.js';
-import type { Article } from './types.js';
+import type { Article, ArticleStatus } from './types.js';
 
 function field(block: string, key: string, file: string): string {
   const line = block.split('\n').find((entry) => entry.startsWith(`${key}:`));
   if (!line) throw new Error(`Knowledge file ${file} is missing "${key}"`);
+  return line.slice(key.length + 1).trim();
+}
+
+function optionalField(block: string, key: string): string | undefined {
+  const line = block.split('\n').find((entry) => entry.startsWith(`${key}:`));
+  if (!line) return undefined;
   return line.slice(key.length + 1).trim();
 }
 
@@ -28,6 +34,10 @@ export function parseArticle(raw: string, file: string): Article {
   }
 
   const title = field(frontmatter, 'title', file);
+  const status = optionalField(frontmatter, 'status') ?? 'known';
+  if (status !== 'known' && status !== 'todo' && status !== 'person') {
+    throw new Error(`Knowledge file ${file} has unsupported status "${status}"`);
+  }
   const tags = field(frontmatter, 'tags', file)
     .split(',')
     .map((tag) => tag.trim())
@@ -40,6 +50,7 @@ export function parseArticle(raw: string, file: string): Article {
     lang: lang as Lang,
     title,
     tags,
+    status: status as ArticleStatus,
     summary,
     body,
     searchText: [title, tags.join(' '), summary, body].join('\n'),

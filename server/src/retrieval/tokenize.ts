@@ -103,10 +103,6 @@ const ZH_STOP_BIGRAMS = new Set([
   '所以',
 ]);
 
-/**
- * Latin words, plus Chinese character bigrams.
- * Bigrams avoid a segmenter while still matching short phrases such as 免费 and 喷嘴.
- */
 export function tokenize(text: string): string[] {
   const tokens: string[] = [];
   const lower = text.toLowerCase();
@@ -115,6 +111,7 @@ export function tokenize(text: string): string[] {
     if (word.length < 2 || EN_STOP.has(word)) continue;
     tokens.push(word);
   }
+  // Character bigrams, so 免费 matches without a segmenter.
   for (const match of text.matchAll(/[\u4e00-\u9fff]+/g)) {
     const chars = [...match[0]].filter((char) => !ZH_STOP_CHARS.has(char));
     if (chars.length === 1) tokens.push(chars[0]);
@@ -127,7 +124,6 @@ export function tokenize(text: string): string[] {
   return tokens;
 }
 
-/** Share of unique query tokens that appear in the document. Range 0–1. */
 export function overlapConfidence(query: string, docText: string): number {
   const queryTokens = [...new Set(tokenize(query))];
   if (queryTokens.length === 0) return 0;

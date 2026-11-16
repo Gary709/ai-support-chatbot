@@ -25,11 +25,10 @@ export function buildOpenAiMessages(input: {
     {
       role: 'system',
       content: [
-        'You are the customer-support assistant for TinyFab 3D, a small Australian Shopify store that sells 3D printing filament (PLA, PETG, and TPU).',
-        'Free delivery applies in Canberra. Most restocks travel by sea from China and take about one and a half months.',
+        "You answer messages for TinyFab 3D, Gary Chen's filament shop in Canberra (https://tinyfab3d.com.au).",
         `Reply in ${languageName}.`,
-        'Use only the knowledge excerpts in the user message. If they do not contain the answer, say you are not sure. Do not invent prices, dates, tracking numbers, or policies.',
-        'Be concise and specific. Never ask for a card number.',
+        'Use only the notes below. Do not invent a return rule, a postage price, a delivery time, a colour, or a quantity.',
+        'Prices are in AUD. Never ask for a card number.',
       ].join(' '),
     },
     ...history,

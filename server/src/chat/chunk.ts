@@ -1,4 +1,3 @@
-/** Split a reply into short stream chunks, including long Chinese runs with no spaces. */
 export function chunkText(text: string, size = 16): string[] {
   if (!text) return [];
   const chunks: string[] = [];

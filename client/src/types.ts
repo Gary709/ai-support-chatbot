@@ -4,7 +4,8 @@ export type LanguageMode = 'auto' | Lang;
 
 export type LlmMode = 'mock' | 'openai';
 
-export type HandoffReason = 'explicit_request' | 'low_confidence' | 'order_lookup';
+export type HandoffReason =
+  'explicit_request' | 'low_confidence' | 'order_lookup' | 'unconfirmed' | 'ask_gary';
 
 export type Source = {
   id: string;

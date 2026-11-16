@@ -1,6 +1,5 @@
 import type { Copy } from '../i18n';
 import type { Health, LanguageMode, Ticket } from '../types';
-import { Spool } from './Spool';
 
 type SidebarProps = {
   copy: Copy;
@@ -22,11 +21,11 @@ export function Sidebar({ copy, languageMode, onLanguageMode, health, tickets }:
   return (
     <aside className="sidebar">
       <div className="brand">
-        <Spool />
-        <div>
-          <p className="eyebrow">Canberra · Filament</p>
-          <h1>TinyFab 3D</h1>
-        </div>
+        <p className="eyebrow">Canberra</p>
+        <h1>TinyFab 3D</h1>
+        <a className="shop-link" href="https://tinyfab3d.com.au">
+          tinyfab3d.com.au
+        </a>
       </div>
       <p className="lede">{copy.lede}</p>
       <p className={`mode ${health && !health.ok ? 'mode-offline' : ''}`}>{modeLabel}</p>
@@ -61,24 +60,6 @@ export function Sidebar({ copy, languageMode, onLanguageMode, health, tickets }:
           {copy.topics.map((topic) => (
             <li key={topic}>{topic}</li>
           ))}
-        </ul>
-      </div>
-
-      <div className="legend">
-        <p className="aside-label">{copy.legend}</p>
-        <ul>
-          <li>
-            <span className="swatch pla" />
-            {copy.pla}
-          </li>
-          <li>
-            <span className="swatch petg" />
-            {copy.petg}
-          </li>
-          <li>
-            <span className="swatch tpu" />
-            {copy.tpu}
-          </li>
         </ul>
       </div>
 

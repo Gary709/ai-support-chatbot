@@ -68,25 +68,28 @@ export function planReply(
     return { ...base, action: 'clarify', text: composeClarify(language) };
   }
   const top = hits[0];
-  if (decision.action === 'handoff' || !top) {
-    const reason = decision.action === 'handoff' ? decision.reason : 'low_confidence';
+  const match = top ? articleInLanguage(articles, top.id, language) : undefined;
+  let handoffReason: HandoffReason | null = decision.action === 'handoff' ? decision.reason : null;
+  if (!handoffReason && match?.status === 'todo') handoffReason = 'unconfirmed';
+  if (!handoffReason && match?.status === 'person') handoffReason = 'ask_gary';
+  if (!handoffReason && !match) handoffReason = 'low_confidence';
+
+  if (handoffReason) {
     const ticket = deps.store.create({
       sessionId: input.sessionId,
       language,
-      reason,
+      reason: handoffReason,
       question: message,
     });
     return {
       ...base,
       action: 'handoff',
-      reason,
+      reason: handoffReason,
       ticket,
       text: composeHandoff(language, ticket),
     };
   }
 
-  // One note per reply. A near-miss second note (PLA settings on a PETG question) makes the answer wander.
-  const match = articleInLanguage(articles, top.id, language);
   const chosen = match ? [match] : [];
   const sources = chosen.map((article) => ({ id: article.id, title: article.title }));
 
@@ -109,6 +112,6 @@ export function planReply(
     ...base,
     action: 'answer',
     sources,
-    text: composeMockAnswer(language, chosen),
+    text: composeMockAnswer(chosen),
   };
 }

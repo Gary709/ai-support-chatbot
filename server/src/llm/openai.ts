@@ -7,10 +7,6 @@ type OpenAiDelta = {
   choices?: { delta?: { content?: string } }[];
 };
 
-/**
- * Stream chat completions from the OpenAI API. The key is read from the
- * environment at call time and is never written to logs.
- */
 export async function* streamOpenAi(input: {
   apiKey: string;
   model: string;

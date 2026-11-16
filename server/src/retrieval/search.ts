@@ -10,10 +10,6 @@ export type SearchHit = {
   matchedLang: Lang;
 };
 
-/**
- * Rank topics across both languages, then keep the best language variant of each topic.
- * A Chinese question can still be answered from the English twin, and the other way around.
- */
 export function searchKnowledge(query: string, articles: Article[], limit = 3): SearchHit[] {
   const ranked = bm25Rank(
     query,

@@ -3,42 +3,49 @@ import type { Lang, Ticket } from '../types.js';
 
 export function composeGreeting(language: Lang): string {
   if (language === 'zh') {
-    return '你好。我是 TinyFab 3D 的客服。可以问我堪培拉免费送货、从中国海运要多久、PLA / PETG / TPU 的打印参数、退货，或订单状态是什么意思。';
+    return '你好，我是 Gary，TinyFab 在堪培拉。可以问线材价格、堪培拉免费送货，或者从中国来货要多久。';
   }
-  return 'Hello. I am the TinyFab 3D support desk. Ask me about free delivery in Canberra, sea freight from China, PLA / PETG / TPU settings, returns, or what an order status means.';
+  return "Hi, it's Gary at TinyFab in Canberra. Ask me about spool prices, free delivery in Canberra, or how long stock takes from China.";
 }
 
 export function composeClarify(language: Lang): string {
   if (language === 'zh') {
-    return '我想确认你要问的是哪一件事。可以问配送、材料、打印参数，或直接说要转人工。';
+    return '再说具体一点？价格、堪培拉送货，或者直接找我。';
   }
-  return 'I want to be sure I answer the right thing. Ask about delivery, a material, a printer setting, or say if you need a person.';
+  return 'Say that again with a bit more detail? A price, Canberra delivery, or just ask for me.';
 }
 
 export function composeHandoff(language: Lang, ticket: Ticket): string {
   if (language === 'zh') {
     if (ticket.reason === 'order_lookup') {
-      return `查询某一笔具体订单需要同事处理，因为这个演示看不到实时的 Shopify 订单。已建立工单 ${ticket.id}。请准备订单号，以及结账时用的邮箱。`;
+      return `我这边看不到 Shopify 里的订单，查不了这一笔。留给 Gary。单号 ${ticket.id}。`;
+    }
+    if (ticket.reason === 'ask_gary') {
+      return `材料、颜色和数量我自己回。单号 ${ticket.id}。`;
+    }
+    if (ticket.reason === 'unconfirmed') {
+      return `这个我还没写下来，所以不编。留给 Gary。单号 ${ticket.id}。`;
     }
     if (ticket.reason === 'low_confidence') {
-      return `商店笔记里没有把握回答这个问题，所以我没有猜，而是建立了工单 ${ticket.id}，交给 TinyFab 的同事。`;
+      return `笔记里没有，我不猜。留给 Gary。单号 ${ticket.id}。`;
     }
-    return `已转给 TinyFab 的同事，并建立工单 ${ticket.id}。写信时带上这个编号即可。这个演示看不到实时的 Shopify 订单，也不能改账户；同事会按工单跟进。`;
+    return `好，我来回。单号 ${ticket.id}。`;
   }
   if (ticket.reason === 'order_lookup') {
-    return `Checking one specific order needs a person, because this demo cannot see live Shopify orders. I opened ticket ${ticket.id}. Have the order number and the checkout email ready.`;
+    return `I can't see Shopify from here, so I can't look that order up. It's with Gary. ${ticket.id}.`;
+  }
+  if (ticket.reason === 'ask_gary') {
+    return `Material, colour and quantity are ones I answer myself. ${ticket.id}.`;
+  }
+  if (ticket.reason === 'unconfirmed') {
+    return `I haven't written that down, so I won't make something up. It's with Gary. ${ticket.id}.`;
   }
   if (ticket.reason === 'low_confidence') {
-    return `I am not confident the store notes cover that, so I did not guess. I opened ticket ${ticket.id} for a person on the TinyFab team.`;
+    return `That's not in my notes, so I won't guess. It's with Gary. ${ticket.id}.`;
   }
-  return `I have handed this to a person on the TinyFab team and opened ticket ${ticket.id}. Keep that id if you write in. This demo cannot see live Shopify orders or change an account.`;
+  return `Yep, I'll take it. ${ticket.id}.`;
 }
 
-export function composeMockAnswer(language: Lang, articles: Article[]): string {
-  const notes = articles.map((article) => article.summary.trim());
-  const closing =
-    language === 'zh'
-      ? '如果这还没回答到，可以换个说法，或直接说「转人工」。'
-      : 'If that does not cover it, ask another way, or say you want a person.';
-  return [...notes, closing].join('\n\n');
+export function composeMockAnswer(articles: Article[]): string {
+  return articles.map((article) => article.summary.trim()).join('\n\n');
 }

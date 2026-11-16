@@ -32,6 +32,27 @@ const EXPLICIT = [
 const GENERAL_ORDER_HELP =
   /how (?:do|can) i (?:track|check)|what (?:does|do) .{0,40}?status(?:es)? mean|订单状态(?:是什么|怎么|的意思)|如何(?:查询|查看)订单|怎么查订单|状态是什么意思/i;
 
+const MATERIAL_OR_COLOUR = [
+  /\b(?:which|what) (?:filament|material|colou?r)\b/i,
+  /\bcolou?r should\b/i,
+  /\b(?:pla|petg)\b[^.\n]{0,40}\bor\b[^.\n]{0,20}\b(?:pla|petg)\b/i,
+  /什么颜色|哪种颜色|有什么颜色|推荐颜色|选哪种|哪种线材|用什么料|PLA还是|PETG还是/,
+];
+
+const QUANTITY = [
+  /\bhow many\b/i,
+  /\bhow much (?!is\b|does\b|are\b)/i,
+  /\b\d+\s?(?:kg|kgs|rolls?|spools?)\b/i,
+  /多少卷|多少公斤|要多少|买多少/,
+];
+
+export function needsGary(message: string): boolean {
+  return (
+    MATERIAL_OR_COLOUR.some((pattern) => pattern.test(message)) ||
+    QUANTITY.some((pattern) => pattern.test(message))
+  );
+}
+
 export function isGreeting(message: string): boolean {
   return GREETINGS.some((pattern) => pattern.test(message.trim()));
 }
@@ -40,9 +61,6 @@ export function isExplicitHandoff(message: string): boolean {
   return EXPLICIT.some((pattern) => pattern.test(message));
 }
 
-/**
- * A specific order needs a person. A question about what statuses mean does not.
- */
 export function isSpecificOrderLookup(message: string): boolean {
   const text = message.trim();
   const hasOrderId = /\b(?:tf|tfb)[- ]?\d{3,}\b/i.test(text) || /#\s?\d{3,}/.test(text);
@@ -78,6 +96,7 @@ export function decideHandoff(input: {
   if (AFFIRMATIONS.some((pattern) => pattern.test(message))) return { action: 'clarify' };
   if (isExplicitHandoff(message)) return { action: 'handoff', reason: 'explicit_request' };
   if (isSpecificOrderLookup(message)) return { action: 'handoff', reason: 'order_lookup' };
+  if (needsGary(message)) return { action: 'handoff', reason: 'ask_gary' };
   if (!(input.confidence >= input.threshold)) {
     return { action: 'handoff', reason: 'low_confidence' };
   }

@@ -37,26 +37,33 @@ describe('searchKnowledge', () => {
   const articles = loadKnowledge();
 
   it('loads both languages for every topic', () => {
-    expect(articles).toHaveLength(22);
+    expect(articles).toHaveLength(26);
     const ids = new Set(articles.map((article) => article.id));
-    expect(ids.size).toBe(11);
+    expect(ids.size).toBe(13);
     for (const id of ids) {
       expect(articles.some((article) => article.id === id && article.lang === 'en')).toBe(true);
       expect(articles.some((article) => article.id === id && article.lang === 'zh')).toBe(true);
     }
   });
 
-  it('ranks Canberra delivery, PETG settings, and returns above unrelated notes', () => {
+  it('ranks prices, Canberra delivery, sea freight, and the unconfirmed notes', () => {
     expect(searchKnowledge('Is delivery free in Canberra?', articles)[0]?.id).toBe(
       'shipping.canberra',
     );
-    expect(searchKnowledge('What nozzle temperature for PETG?', articles)[0]?.id).toBe(
-      'filament.petg',
+    expect(searchKnowledge('How much is PLA Basic?', articles)[0]?.id).toBe('products.pla-basic');
+    expect(searchKnowledge('How much is PETG Basic?', articles)[0]?.id).toBe('products.petg-basic');
+    expect(searchKnowledge('What is your returns policy?', articles)[0]?.id).toBe('todo.returns');
+    expect(searchKnowledge('How much is postage to Melbourne?', articles)[0]?.id).toBe(
+      'todo.shipping-cost',
     );
-    expect(searchKnowledge('PLA bed temperature', articles)[0]?.id).toBe('filament.pla');
-    expect(searchKnowledge('What is your returns policy?', articles)[0]?.id).toBe('returns.policy');
+    expect(searchKnowledge('How many days does delivery take?', articles)[0]?.id).toBe(
+      'todo.delivery-days',
+    );
     expect(searchKnowledge('How long does sea freight from China take?', articles)[0]?.id).toBe(
-      'shipping.leadtime',
+      'stock.leadtime',
+    );
+    expect(searchKnowledge('Do you ship Australia-wide?', articles)[0]?.id).toBe(
+      'shipping.australia',
     );
   });
 
@@ -65,12 +72,12 @@ describe('searchKnowledge', () => {
     expect(shipping?.id).toBe('shipping.canberra');
     expect(shipping?.matchedLang).toBe('zh');
 
-    const petg = searchKnowledge('PETG 喷嘴温度是多少', articles)[0];
-    expect(petg?.id).toBe('filament.petg');
+    const petg = searchKnowledge('PETG Basic 多少钱', articles)[0];
+    expect(petg?.id).toBe('products.petg-basic');
     expect(petg?.matchedLang).toBe('zh');
 
-    expect(searchKnowledge('从中国海运大概要多久', articles)[0]?.id).toBe('shipping.leadtime');
-    expect(searchKnowledge('退货政策是什么', articles)[0]?.id).toBe('returns.policy');
+    expect(searchKnowledge('从中国海运大概要多久', articles)[0]?.id).toBe('stock.leadtime');
+    expect(searchKnowledge('退货怎么算', articles)[0]?.id).toBe('todo.returns');
   });
 
   it('gives in-catalogue questions a high overlap and off-topic questions a low one', () => {
@@ -81,6 +88,18 @@ describe('searchKnowledge', () => {
     const confidence = offTopic[0]?.confidence ?? 0;
     expect(confidence).toBeLessThan(0.34);
     expect(overlapConfidence('hello there', 'free delivery in canberra')).toBe(0);
+  });
+
+  it('marks returns, postage and delivery days for Gary to confirm', () => {
+    const todos = articles.filter((article) => article.status === 'todo' && article.lang === 'en');
+    expect(todos.map((article) => article.id).sort()).toEqual([
+      'todo.delivery-days',
+      'todo.returns',
+      'todo.shipping-cost',
+    ]);
+    for (const article of todos) {
+      expect(article.summary).toBe('TODO: confirm with Gary');
+    }
   });
 
   it('returns nothing for an empty query', () => {

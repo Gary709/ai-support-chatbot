@@ -58,15 +58,17 @@ describe('reply language', () => {
 
   it('asks the live model to stay in the detected language and only quotes the notes', () => {
     const plan = planReply(
-      { message: 'PETG 喷嘴温度是多少？', sessionId: 'session1' },
+      { message: 'PETG Basic 一公斤多少钱？', sessionId: 'session1' },
       { store, threshold: DEFAULT_CONFIDENCE_THRESHOLD, mode: 'openai' },
     );
     expect(plan.language).toBe('zh');
+    expect(plan.action).toBe('answer');
     expect(plan.text).toBe('');
     const system = plan.openaiMessages?.[0]?.content ?? '';
     const user = plan.openaiMessages?.at(-1)?.content ?? '';
     expect(system).toContain('Simplified Chinese');
-    expect(user).toContain('230');
+    expect(system).not.toContain('TPU');
+    expect(user).toContain('15.99');
     expect(JSON.stringify(plan.openaiMessages)).not.toMatch(/sk-/);
   });
 });
